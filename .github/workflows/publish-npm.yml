@@ -1,14 +1,18 @@
-# This is for publishing non-core/cli npm packages!
+# This is for publishing non-core/cli/types npm packages!
+# It is manually dispatched from the GitHub UI.
 
 name: Publish npm
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write # Required for OIDC
+
 jobs:
-  publish-npm:
+  publish:
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    name: Publish npm packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -21,7 +25,7 @@ jobs:
       - name: Build packages
         run: bash ./scripts/release/buildPackages.sh
       - name: Publish npm packages
-        run: bash ./scripts/release/publishPackages.sh
+        run: unset NODE_AUTH_TOKEN && bash ./scripts/release/publish.sh
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

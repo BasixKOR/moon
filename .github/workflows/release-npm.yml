@@ -1,3 +1,7 @@
+# This is for publishing core/cli/types npm packages!
+# It is called a post-hook from the release workflow,
+# which is triggered when a new release is tagged.
+
 name: Release npm
 
 on:
@@ -31,7 +35,7 @@ jobs:
           path: artifacts
           merge-multiple: true
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
       - name: Build packages
         run: yarn run build:types
       - name: Copy artifacts and release packages
