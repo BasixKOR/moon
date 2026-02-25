@@ -4555,7 +4555,7 @@ dependencies = [
 
 [[package]]
 name = "moon_config"
-version = "2.0.5"
+version = "2.0.6"
 dependencies = [
  "deserialize_untagged_verbose_error",
  "hcl-rs",
@@ -4856,7 +4856,7 @@ dependencies = [
 
 [[package]]
 name = "moon_project"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "miette 7.6.0",
  "moon_common",
@@ -5002,7 +5002,7 @@ dependencies = [
 
 [[package]]
 name = "moon_task"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "miette 7.6.0",
  "moon_common",
