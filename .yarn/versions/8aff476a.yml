@@ -1,7 +1,0 @@
-releases:
-  '@moonrepo/visualizer': patch
-
-declined:
-  - '@moonrepo/report'
-  - '@moonrepo/runtime'
-  - website
