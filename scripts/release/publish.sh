@@ -32,7 +32,10 @@ for package in packages/*; do
 		echo "Skipping"
 	else
 		cd "./$package" || exit
-		npm publish --tag "$tag" --access public
+
+		# Will fail if the version already exists, so ignore it
+		npm publish --tag "$tag" --access public || true
+
 		cd ../..
 	fi
 done
