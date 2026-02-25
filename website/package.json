@@ -36,7 +36,6 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.9.2",
     "@docusaurus/tsconfig": "^3.9.2",
-    "@moonrepo/runtime": "workspace:^",
     "@moonrepo/types": "workspace:^",
     "@types/cytoscape": "^3.31.0",
     "@types/cytoscape-dagre": "^2.3.4",
