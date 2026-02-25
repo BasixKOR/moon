@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+#### 🚀 Updates
+
+- Temporarily disabled shallow checkouts triggering a hard error in CI until we can implement a
+  better solution. This means that if you have a shallow checkout, you may see incorrect affected
+  results, or Git commands may fail.
+- Added more logs to `moon docker prune` to help debug edge cases.
+- Added `MOON_INCLUDE_RELATIONS` environment variable support for the `--include-relations` CLI
+  option.
+- Added `.env` and `.env.*` as defaults to the `hasher.ignoreMissingPatterns` setting.
+
+#### 🐞 Fixes
+
+- Fixed an issue where the graph visualizers would not render correctly in the VS Code extension.
+- Fixed an issue where a task with `shell: false` would be force enabled when a glob/env was
+  detected. We now respect the configured value.
+- Fixed an issue where "run" type based tasks would not run in CI.
+
 ## 2.0.1
 
 #### 🚀 Updates
