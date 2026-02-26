@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.0.3
 
 This is a re-release as the v2.0.0 release workflow failed.
 
