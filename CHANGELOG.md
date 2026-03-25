@@ -1,5 +1,34 @@
 # Changelog
 
+## Unreleased
+
+#### 🚀 Updates
+
+- Updated the affected tracker to mark project/tasks as affected on-demand, instead of everything up
+  front. This allows us to short-circuit early, improving performance for very large repos.
+- Updated many commands and call sites to load projects/tasks without expansion, slightly improving
+  performance and memory usage.
+
+#### 🧰 Toolchains
+
+- **Go**
+  - Added `inferRelationships` and `inferRelationshipsFromTests` settings to control
+    `go list --deps` usage.
+- **JavaScript**
+  - Updated `deno.lock` and `yarn.lock` parsing dependencies.
+- **Python**
+  - Fixed an issue where install commands didn't have access to venv bins.
+  - Fixed an issue where project dependencies were not being inferred correctly when the dependency
+    contains extras metadata.
+- **Rust**
+  - Updated `Cargo.lock` parsing dependencies.
+- **TypeScript**
+  - Added TypeScript v6 support.
+
+#### ⚙️ Internal
+
+- Updated dependencies.
+
 ## 2.1.1
 
 #### 🐞 Fixes

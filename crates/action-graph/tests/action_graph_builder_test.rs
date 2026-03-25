@@ -1205,7 +1205,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/b.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::Deep, DownstreamScope::Deep);
+                        affected.set_scopes(UpstreamScope::Deep, DownstreamScope::Deep);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1584,7 +1584,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/b.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::None, DownstreamScope::None);
+                        affected.set_scopes(UpstreamScope::None, DownstreamScope::None);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1648,7 +1648,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/b.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::Direct, DownstreamScope::None);
+                        affected.set_scopes(UpstreamScope::Direct, DownstreamScope::None);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1712,7 +1712,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/b.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::Deep, DownstreamScope::None);
+                        affected.set_scopes(UpstreamScope::Deep, DownstreamScope::None);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1780,7 +1780,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/c.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::None, DownstreamScope::None);
+                        affected.set_scopes(UpstreamScope::None, DownstreamScope::None);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1845,7 +1845,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/c.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::None, DownstreamScope::Direct);
+                        affected.set_scopes(UpstreamScope::None, DownstreamScope::Direct);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -1914,7 +1914,7 @@ mod action_graph_builder {
                 builder.mock_affected(
                     FxHashSet::from_iter([WorkspaceRelativePathBuf::from("deps-affected/c.txt")]),
                     |affected| {
-                        affected.with_scopes(UpstreamScope::None, DownstreamScope::Deep);
+                        affected.set_scopes(UpstreamScope::None, DownstreamScope::Deep);
                         affected
                             .mark_task_affected(&task, AffectedBy::AlwaysAffected)
                             .unwrap();
@@ -3108,7 +3108,10 @@ mod action_graph_builder {
             let mut builder = container.create_builder(wg.clone()).await;
 
             let bar = wg.get_project("bar").unwrap();
-            builder.sync_project(&bar).await.unwrap();
+            builder
+                .sync_project(&bar, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3133,13 +3136,22 @@ mod action_graph_builder {
             let mut builder = container.create_builder(wg.clone()).await;
 
             let foo = wg.get_project("foo").unwrap();
-            builder.sync_project(&foo).await.unwrap();
+            builder
+                .sync_project(&foo, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let bar = wg.get_project("bar").unwrap();
-            builder.sync_project(&bar).await.unwrap();
+            builder
+                .sync_project(&bar, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let qux = wg.get_project("qux").unwrap();
-            builder.sync_project(&qux).await.unwrap();
+            builder
+                .sync_project(&qux, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3178,10 +3190,16 @@ mod action_graph_builder {
                 .await;
 
             let foo = wg.get_project("foo").unwrap();
-            builder.sync_project(&foo).await.unwrap();
+            builder
+                .sync_project(&foo, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let qux = wg.get_project("qux").unwrap();
-            builder.sync_project(&qux).await.unwrap();
+            builder
+                .sync_project(&qux, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3210,9 +3228,18 @@ mod action_graph_builder {
 
             let foo = wg.get_project("foo").unwrap();
 
-            builder.sync_project(&foo).await.unwrap();
-            builder.sync_project(&foo).await.unwrap();
-            builder.sync_project(&foo).await.unwrap();
+            builder
+                .sync_project(&foo, &RunRequirements::default())
+                .await
+                .unwrap();
+            builder
+                .sync_project(&foo, &RunRequirements::default())
+                .await
+                .unwrap();
+            builder
+                .sync_project(&foo, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3247,7 +3274,10 @@ mod action_graph_builder {
                 .await;
 
             let bar = wg.get_project("bar").unwrap();
-            builder.sync_project(&bar).await.unwrap();
+            builder
+                .sync_project(&bar, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3272,7 +3302,10 @@ mod action_graph_builder {
                 .await;
 
             let bar = wg.get_project("bar").unwrap();
-            builder.sync_project(&bar).await.unwrap();
+            builder
+                .sync_project(&bar, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
@@ -3297,7 +3330,10 @@ mod action_graph_builder {
                 .await;
 
             let bar = wg.get_project("bar").unwrap();
-            builder.sync_project(&bar).await.unwrap();
+            builder
+                .sync_project(&bar, &RunRequirements::default())
+                .await
+                .unwrap();
 
             let (_, graph) = builder.build();
 
