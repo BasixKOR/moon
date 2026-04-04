@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+#### 🚀 Updates
+
+- Added `moon toolchain download` and `moon extension download` commands that will download all
+  configured toolchain/extension plugins. This allows you to prime the download cache.
+
+#### 🐞 Fixes
+
+- Fixed an "unrecognized subcommand moon" error that can occur when global and local moon binaries
+  exist.
+- Fixed an EPIPE error in streaming child processes.
+- Fixed trailing `--` in task commands being stripped.
+- Potential fix for graph visualizer commands failing with a JavaScript error.
+
+#### 🧰 Toolchains
+
+- **Go**
+  - Updated `go list` to not require `go.mod` file to run.
+
 ## 2.1.3
 
 #### 🧰 Toolchains
