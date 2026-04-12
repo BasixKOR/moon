@@ -34,6 +34,7 @@
     "@moonrepo/core-linux-x64-gnu": "2.1.4",
     "@moonrepo/core-linux-x64-musl": "2.1.4",
     "@moonrepo/core-macos-arm64": "2.1.4",
+    "@moonrepo/core-macos-x64": "2.1.4",
     "@moonrepo/core-windows-x64-msvc": "2.1.4"
   }
 }
