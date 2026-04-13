@@ -5174,7 +5174,7 @@ dependencies = [
 
 [[package]]
 name = "moon_config"
-version = "2.0.10"
+version = "2.0.11"
 dependencies = [
  "deserialize_untagged_verbose_error",
  "httpmock",
