@@ -1,5 +1,40 @@
 # Changelog
 
+## Unreleased
+
+#### 🚀 Updates
+
+- Added request retry support (via proto), that will retry up to 3 times with exponential backoff
+  for transient errors (network issues, rate limits, etc).
+- Improved async affected tracking by another 5-10%.
+- Updated PowerShell commands to use `-EncodedCommand` instead of `-Command` to avoid
+  quoting/escaping issues. Let us know if you run into any issues with this change.
+
+#### 🐞 Fixes
+
+- Fixed `--summary` not being respected in `moon ci`.
+- Fixed issues with graph visualizer commands failing with a JavaScript error after the v2.2 graph
+  changes.
+- Fixed an issue where checking the remote cache for an entry _before the task execution_ could
+  cause the task to fail if the remote cache check errored. We now treat remote cache errors as
+  cache misses, and allow the task to execute.
+- Fixed an issue where filtered graphs would point to the wrong data because indexes changed.
+
+#### 🧰 Toolchains
+
+- **JavaScript**
+  - Fixed `pnpm-lock.yaml` parsing for pnpm v10's multi-document lockfiles, which are written when
+    `managePackageManagerVersions` is enabled (the default).
+- **TypeScript**
+  - Updated project references to start with `./` in preparation for the removal of `baseUrl` in
+    TypeScript v7.
+
+#### ⚙️ Internal
+
+- Updated proto to [v0.56.3](https://github.com/moonrepo/proto/releases/tag/v0.56.3) from 0.56.1.
+- Updated Rust to v1.95.0.
+- Updated dependencies.
+
 ## 2.2.0
 
 #### 💥 Breaking
