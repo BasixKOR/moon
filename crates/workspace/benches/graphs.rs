@@ -50,9 +50,10 @@ fn limit_1000(c: &mut Criterion) {
     do_limit(c, 1000);
 }
 
-fn limit_5000(c: &mut Criterion) {
-    do_limit(c, 5000);
-}
+// Too slow in CI!
+// fn limit_5000(c: &mut Criterion) {
+//     do_limit(c, 5000);
+// }
 
-criterion_group!(benches, limit_100, limit_1000, limit_5000);
+criterion_group!(benches, limit_100, limit_1000); //, limit_5000);
 criterion_main!(benches);
