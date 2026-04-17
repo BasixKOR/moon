@@ -9,7 +9,7 @@ repository = "https://github.com/moonrepo/moon"
 publish = false
 
 [[bench]]
-name = "graphs"
+name = "workspace_graphs"
 harness = false
 
 [dependencies]

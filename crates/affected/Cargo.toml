@@ -9,7 +9,7 @@ repository = "https://github.com/moonrepo/moon"
 publish = false
 
 [[bench]]
-name = "tracker"
+name = "affected_tracker"
 harness = false
 
 [dependencies]

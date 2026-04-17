@@ -30,7 +30,7 @@ jobs:
           # ref: ${{ github.event.pull_request.head.sha }}
       - uses: moonrepo/setup-rust@v1
       - name: Run benchmarks
-        run: cargo bench -p moon_affected -p moon_workspace --no-fail-fast -- --save-baseline head-sha
+        run: cargo bench -p moon_affected -p moon_workspace --no-fail-fast --no-fail-fast -- --save-baseline head-sha
 
       # Run on base branch to get a baseline
       - name: Checkout base branch
