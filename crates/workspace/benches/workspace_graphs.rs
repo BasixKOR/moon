@@ -1,22 +1,24 @@
-use criterion::{Criterion, criterion_group, criterion_main};
-use moon_bench_utils::create_simple_workspace;
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
+use moon_bench_utils::{create_simple_workspace, handle_unwrap};
+use moon_common::{is_ci, is_local};
 use moon_test_utils2::WorkspaceMocker;
 use moon_workspace::{WorkspaceBuilder, WorkspaceBuilderAsync};
 use tokio::runtime::Runtime;
 
-fn handle_unwrap<T>(res: Result<T, miette::Report>) {
-    if let Err(error) = res {
-        dbg!(&error);
-        panic!("{error}");
-    }
+fn id(max: u16, label: &str) -> BenchmarkId {
+    BenchmarkId::new(label, max)
+}
+
+fn should_run(max: u16) -> bool {
+    is_local() || is_ci() && max <= 1000
 }
 
 fn do_limit(c: &mut Criterion, max: u16) {
-    let mut group = c.benchmark_group(format!("{max}"));
+    let mut group = c.benchmark_group("WorkspaceBuilder");
     let sandbox = create_simple_workspace(max);
     let mocker = WorkspaceMocker::new(sandbox.path()).load_default_configs();
 
-    group.bench_function("sync", |b| {
+    group.bench_function(id(max, "build_graphs_sync"), |b| {
         b.to_async(Runtime::new().unwrap()).iter(async || {
             let mut builder = WorkspaceBuilder::new(mocker.mock_workspace_builder_context())
                 .await
@@ -28,7 +30,7 @@ fn do_limit(c: &mut Criterion, max: u16) {
         })
     });
 
-    group.bench_function("async", |b| {
+    group.bench_function(id(max, "build_graphs_async"), |b| {
         b.to_async(Runtime::new().unwrap()).iter(async || {
             let mut builder = WorkspaceBuilderAsync::new(mocker.mock_workspace_builder_context())
                 .await
@@ -50,10 +52,12 @@ fn limit_1000(c: &mut Criterion) {
     do_limit(c, 1000);
 }
 
-// Too slow in CI!
-// fn limit_5000(c: &mut Criterion) {
-//     do_limit(c, 5000);
-// }
+fn limit_5000(c: &mut Criterion) {
+    // Too slow for CI!
+    if should_run(5000) {
+        do_limit(c, 5000);
+    }
+}
 
-criterion_group!(benches, limit_100, limit_1000); //, limit_5000);
+criterion_group!(benches, limit_100, limit_1000, limit_5000);
 criterion_main!(benches);
