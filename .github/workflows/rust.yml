@@ -74,6 +74,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: moonrepo/setup-rust@v1
         with:
           bins: just
@@ -117,6 +119,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: moonrepo/setup-rust@v1
         with:
           bins: just, cargo-nextest, cargo-llvm-cov
@@ -127,7 +131,7 @@ jobs:
         with:
           auto-install: true
           cache: true
-          proto-version: "0.56.3" # Keep in sync
+          proto-version: "0.56.4" # Keep in sync
         env:
           PROTO_LOG: trace
       - uses: mozilla-actions/sccache-action@v0.0.9

@@ -50,8 +50,8 @@ impl ToolchainRegistry {
 
         for toolchain in self.load_all().await? {
             if let Some(language) = &toolchain.metadata.language
-                && toolchain.detect_project_usage(dir)?
                 && !language.is_unknown()
+                && toolchain.detect_project_usage(dir)?
             {
                 detected.push(language.clone());
             }
