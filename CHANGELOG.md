@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+#### 🐞 Fixes
+
+- Fixed a potential deadlock in the action pipeline when running many sync heavy operations.
+
 ## 2.2.2
 
 #### 🚀 Updates

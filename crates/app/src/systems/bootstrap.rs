@@ -3,7 +3,7 @@ use starbase_styles::color::{no_color, supports_color};
 
 pub fn setup_no_colors() {
     let bag = GlobalEnvBag::instance();
-    bag.set("NO_COLOR", "1");
+    bag.set("NO_COLOR", "true");
     // https://github.com/mitsuhiko/clicolors-control/issues/19
     bag.set("CLICOLOR", "0");
     bag.remove("FORCE_COLOR");
@@ -69,12 +69,12 @@ mod test {
             #[serial]
             fn sets_vars() {
                 let bag = GlobalEnvBag::instance();
-                bag.set("NO_COLOR", "1");
+                bag.set("NO_COLOR", "true");
 
                 setup_colors(false);
 
                 assert_eq!(bag.get("CLICOLOR").unwrap(), "0");
-                assert_eq!(bag.get("NO_COLOR").unwrap(), "1");
+                assert_eq!(bag.get("NO_COLOR").unwrap(), "true");
 
                 reset_vars();
             }
@@ -94,7 +94,7 @@ mod test {
                     setup_colors(false);
 
                     assert_eq!(bag.get("CLICOLOR").unwrap(), "0");
-                    assert_eq!(bag.get("NO_COLOR").unwrap(), "1");
+                    assert_eq!(bag.get("NO_COLOR").unwrap(), "true");
 
                     reset_vars();
                 }
@@ -111,7 +111,7 @@ mod test {
                     setup_colors(false);
 
                     assert_eq!(bag.get("CLICOLOR").unwrap(), "0");
-                    assert_eq!(bag.get("NO_COLOR").unwrap(), "1");
+                    assert_eq!(bag.get("NO_COLOR").unwrap(), "true");
 
                     reset_vars();
                 }
