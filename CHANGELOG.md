@@ -9,6 +9,25 @@
 - Fixed a regression where moon would fail with `Failed to execute git and capture output` when
   `.gitmodules` referenced a submodule that hadn't been checked out (e.g. `update = none`).
   Uninitialized submodules are now skipped, matching the v1 behavior.
+- Fixed an issue where toolchain dependency installation would be skipped even when the vendor
+  directory does not exist.
+- Fixed an issue where failing actions would not re-run again because their hash would be persisted,
+  even on failure.
+- Fixed an issue where `WouldBlock` errors would trigger when attempting to flush buffered output to
+  the console.
+- Fixed an issue where `--upstream=none` would error for missing dependencies.
+
+#### 🧰 Toolchains
+
+- **Python**
+  - Fixed an issue where the wrong arguments were passed to `uv sync` depending on whether proto is
+    managing the Python version.
+  - Fixed an issue where venv paths were not available to commands run through the toolchain, like
+    `uv sync`.
+
+#### ⚙️ Internal
+
+- Updated dependencies.
 
 ## 2.2.3
 

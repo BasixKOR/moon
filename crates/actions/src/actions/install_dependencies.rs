@@ -31,7 +31,6 @@ hash_fingerprint!(
         manifest_paths: BTreeSet<WorkspaceRelativePathBuf>,
         project: Option<&'action ProjectFragment>,
         toolchain_config: &'action JsonValue,
-        vendor_dir_exists: bool,
     }
 );
 
@@ -144,7 +143,7 @@ pub async fn install_dependencies(
     };
 
     // Create a lock if we haven't run before
-    let Some(_lock) = create_hash_and_return_lock_if_changed(
+    let Some(mut lock) = create_hash_and_return_lock_if_changed(
         action,
         &app_context,
         create_hash_content(
@@ -156,8 +155,11 @@ pub async fn install_dependencies(
             &input,
         )
         .await?,
-    )
-    .await?
+        || {
+            toolchain.metadata.vendor_dir_name.is_some()
+                && !has_vendor_installed_dependencies(&toolchain, &deps_root)
+        },
+    )?
     else {
         debug!(
             toolchain_id = toolchain.id.as_str(),
@@ -224,6 +226,8 @@ pub async fn install_dependencies(
 
     finalize_action_operations(action, &toolchain, setup_op, output.operations, vec![])?;
 
+    lock.persist_hash_manifest();
+
     Ok(if skipped {
         ActionStatus::Skipped
     } else {
@@ -246,13 +250,7 @@ async fn create_hash_content<'action>(
         manifest_paths: BTreeSet::default(),
         project: input.project.as_ref(),
         toolchain_config: &input.toolchain_config,
-        vendor_dir_exists: false,
     };
-
-    // Check if vendored already
-    if let Some(vendor_dir_name) = &toolchain.metadata.vendor_dir_name {
-        fingerprint.vendor_dir_exists = deps_root.join(vendor_dir_name).exists();
-    }
 
     // Extract lockfile last modification
     for lock_file_name in &toolchain.metadata.lock_file_names {

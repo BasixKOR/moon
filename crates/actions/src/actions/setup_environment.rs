@@ -89,7 +89,7 @@ pub async fn setup_environment(
     let output = toolchain.setup_environment(input.clone()).await?;
 
     // Create a lock if we haven't run before
-    let Some(_lock) = create_hash_and_return_lock_if_changed(
+    let Some(mut lock) = create_hash_and_return_lock_if_changed(
         action,
         &app_context,
         SetupEnvironmentFingerprint {
@@ -99,8 +99,8 @@ pub async fn setup_environment(
             commands: &output.commands,
             operations: &output.operations,
         },
-    )
-    .await?
+        || false,
+    )?
     else {
         debug!(
             toolchain_id = node.toolchain_id.as_str(),
@@ -149,6 +149,8 @@ pub async fn setup_environment(
         output.operations,
         output.changed_files,
     )?;
+
+    lock.persist_hash_manifest();
 
     Ok(if skipped {
         ActionStatus::Skipped
