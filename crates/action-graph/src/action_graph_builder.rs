@@ -132,6 +132,7 @@ pub struct ActionGraphBuilder<'query> {
     changed_files: Option<FxHashSet<WorkspaceRelativePathBuf>>,
 
     // Target tracking
+    ignored_dependencies: FxHashMap<Target, FxHashSet<Target>>,
     passthrough_targets: FxHashSet<Target>,
     primary_targets: FxHashSet<Target>,
 }
@@ -151,6 +152,7 @@ impl<'query> ActionGraphBuilder<'query> {
             graph: Dag::new(),
             nodes: FxHashMap::default(),
             options,
+            ignored_dependencies: FxHashMap::default(),
             passthrough_targets: FxHashSet::default(),
             primary_targets: FxHashSet::default(),
             changed_files: None,
@@ -168,6 +170,10 @@ impl<'query> ActionGraphBuilder<'query> {
             for target in mem::take(&mut self.passthrough_targets) {
                 context.set_target_state(target, TargetState::Passthrough);
             }
+        }
+
+        if !self.ignored_dependencies.is_empty() {
+            context.ignored_dependencies = mem::take(&mut self.ignored_dependencies);
         }
 
         if !self.primary_targets.is_empty() {
@@ -957,8 +963,22 @@ impl<'query> ActionGraphBuilder<'query> {
             id: None,
         });
 
+        let had_ignored_dependencies = if should_run_dependencies {
+            self.ignored_dependencies.remove(&task.target).is_some()
+        } else {
+            false
+        };
+
         // Check if the node exists to avoid all the overhead below
         if let Some(index) = self.get_index_from_node(&node) {
+            if had_ignored_dependencies && !task.deps.is_empty() {
+                child_reqs.skip_affected = true;
+
+                let edges = Box::pin(self.run_task_dependencies(task, &child_reqs, state)).await?;
+
+                self.link_optional_requirements(index, edges)?;
+            }
+
             return Ok(Some(index));
         }
 
@@ -978,10 +998,17 @@ impl<'query> ActionGraphBuilder<'query> {
         // Insert and then link edges
         let index = self.insert_node(node);
 
-        if !task.deps.is_empty() && should_run_dependencies {
-            child_reqs.skip_affected = true;
+        if !task.deps.is_empty() {
+            if should_run_dependencies {
+                child_reqs.skip_affected = true;
 
-            edges.extend(Box::pin(self.run_task_dependencies(task, &child_reqs, state)).await?);
+                edges.extend(Box::pin(self.run_task_dependencies(task, &child_reqs, state)).await?);
+            } else {
+                self.ignored_dependencies.insert(
+                    task.target.clone(),
+                    task.deps.iter().map(|dep| dep.target.clone()).collect(),
+                );
+            }
         }
 
         self.link_optional_requirements(index, edges)?;
